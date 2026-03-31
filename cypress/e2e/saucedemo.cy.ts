@@ -4,6 +4,7 @@ import { SauceDemoPage } from './pages/sauce-demo.page';
 describe('SauceDemo E2E Suite - Positive & Negative Scenarios', () => {
     // This is the environmental test data loaded in cypress.config.ts
     const envData = Cypress.env();
+    console.log('Loaded Environment Data:', envData); // Debug log to verify data loading
     const page = new SauceDemoPage();
 
     beforeEach(() => {
