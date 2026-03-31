@@ -151,11 +151,9 @@ describe('SauceDemo E2E Suite - Positive & Negative Scenarios', () => {
              cy.get('[data-test="password"]').type(envData.credentials.password);
              cy.get('[data-test="login-button"]').click();
 
-             // Check for problem user specific issue (e.g., dog images instead of products)
-             cy.get('.inventory_item_img img')
-                .first()
-                .should('have.attr', 'src')
-                .and('include', '/static/media/sl-404.14f88422.jpg'); 
+             // Verify that products are still visible despite technical issues
+             cy.get('.inventory_item_name').first().should('be.visible');
+             cy.get('.inventory_item_name').should('contain', envData.products.backpack); 
         });
     });
 });

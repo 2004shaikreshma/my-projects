@@ -15,7 +15,7 @@ function getConfigurationByFile(env: string) {
 }
 
 export default defineConfig({
-  allowCypressEnv: false,
+  allowCypressEnv: true,
   e2e: {
     baseUrl: 'https://www.saucedemo.com/',
     specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
