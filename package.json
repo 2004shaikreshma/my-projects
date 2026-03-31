@@ -7,12 +7,9 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "cy:run:headed": "cypress run --headed",
-    "test:dev": "cypress run --env configFile=dev",
-    "test:dev:headed": "cypress run --env configFile=dev --headed",
-    "test:prod": "cypress run --env configFile=prod",
-    "test:prod:headed": "cypress run --env configFile=prod --headed",
-    "test:stage": "cypress run --env configFile=stage",
-    "test:stage:headed": "cypress run --env configFile=stage --headed"
+    "test:dev": "cypress run --env configFile=dev --headed",
+    "test:prod": "cypress run --env configFile=prod --headed",
+    "test:stage": "cypress run --env configFile=stage --headed"
   },
   "keywords": [],
   "author": "",
