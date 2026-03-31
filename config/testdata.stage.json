@@ -1,0 +1,34 @@
+{
+  "baseUrl": "https://www.saucedemo.com/",
+  "credentials": {
+    "username": "performance_glitch_user",
+    "lockedOutUser": "locked_out_user",
+    "problemUser": "problem_user",
+    "password": "secret_sauce"
+  },
+  "products": {
+    "fleeceJacket": "Sauce Labs Fleece Jacket",
+    "boltTShirt": "Sauce Labs Bolt T-Shirt",
+    "backpack": "Sauce Labs Backpack",
+    "bikeLight": "Sauce Labs Bike Light",
+    "onesie": "Sauce Labs Onesie",
+    "testAllTheThings": "Test.allTheThings() T-Shirt (Red)"
+  },
+  "checkoutProfiles": [
+    {
+      "firstName": "John",
+      "lastName": "Doe",
+      "postalCode": "12345"
+    },
+    {
+      "firstName": "Jane",
+      "lastName": "Smith",
+      "postalCode": "98765"
+    },
+    {
+      "firstName": "Alice",
+      "lastName": "Wonder",
+      "postalCode": "54321"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "cypress-multi-env",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "test:dev": "cypress run --env configFile=dev",
+    "test:prod": "cypress run --env configFile=prod",
+    "test:stage": "cypress run --env configFile=stage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/cypress": "^0.1.6",
+    "@types/node": "^25.5.0",
+    "cypress": "^15.13.0",
+    "ts-loader": "^9.5.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.2"
+  }
+}
