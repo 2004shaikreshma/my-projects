@@ -17,9 +17,7 @@ function getConfigurationByFile(env: string) {
 export default defineConfig({
   allowCypressEnv: true,
   e2e: {
-    baseUrl: 'https://www.saucedemo.com/',
     specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
-    headed: true,
     setupNodeEvents(on, config) {
       // Logic for environment switching
       const envName = config.env.configFile || 'dev'
