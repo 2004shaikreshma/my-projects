@@ -10,7 +10,11 @@
     "test:dev": "cypress run --env configFile=dev --headed",
     "test:prod": "cypress run --env configFile=prod --headed",
     "test:stage": "cypress run --env configFile=stage --headed",
-    "test:dev:headless": "cypress run --env configFile=dev"
+    "test:dev:headless": "cypress run --env configFile=dev",
+    "cy:grep:sanity": "cypress run --expose grepTags=\"@sanity\" --headed",
+    "cy:grep:sanity:prod": "cypress run --env configFile=prod --expose grepTags=\"@sanity\" --headed",
+    "cy:grep:regression": "cypress run --expose grepTags=\"@regression\" --headed",
+    "cy:grep:regression:prod": "cypress run --env configFile=prod --expose grepTags=\"@regression\" --headed"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +23,7 @@
   "devDependencies": {
     "@types/node": "^25.5.0",
     "cypress": "^15.13.0",
+    "@cypress/grep": "^6.0.0",
     "ts-loader": "^9.5.4",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2"
