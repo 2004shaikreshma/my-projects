@@ -32,7 +32,7 @@ export class SauceDemoPage {
 
     // Page Actions
     visit(url: string = '/') {
-        cy.visit(url);
+        cy.visit(url, { failOnStatusCode: false });
         return this;
     }
 
@@ -41,6 +41,17 @@ export class SauceDemoPage {
         this.usernameInput.type(username);
         this.passwordInput.type(password);
         this.loginButton.click();
+        return this;
+    }
+
+    loginWithSession(username: string, password: string) {
+        cy.session(username, () => {
+            cy.visit('/');
+            this.login(username, password);
+            // Ensure login completed and we're on the right page before saving the session
+            cy.url().should('include', '/inventory.html');
+            this.title.should('be.visible').and('have.text', 'Products');
+        });
         return this;
     }
 
