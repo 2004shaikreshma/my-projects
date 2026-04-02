@@ -19,11 +19,11 @@ describe('SauceDemo E2E Suite - Positive & Negative Scenarios', () => {
                 page.title.should('be.visible');
             });
 
-        it('should successfully log in with standard_user', { tags: '@sanity' }, () => {
+        it('[TC-01] should successfully log in with standard_user', { tags: '@sanity' }, () => {
             page.verifyLoggedIn();
         });
 
-        it('should add items to cart and complete checkout', { tags: '@regression' }, () => {
+        it('[TC-02] should add items to cart and complete checkout', { tags: '@regression' }, () => {
             // Already logged in via session in beforeEach
 
             // Add backpack and bike light to cart
@@ -53,7 +53,7 @@ describe('SauceDemo E2E Suite - Positive & Negative Scenarios', () => {
             page.verifyOnInventoryPage();
         });
 
-        it('should logout successfully', { tags: '@sanity' }, () => {
+        it('[TC-03] should logout successfully', { tags: '@sanity' }, () => {
              // Already logged in via session in beforeEach
 
              // Open menu and logout
@@ -70,12 +70,12 @@ describe('SauceDemo E2E Suite - Positive & Negative Scenarios', () => {
             cy.get('body').should('be.visible');
         });
 
-        it('should show error with locked_out_user', () => {
+        it('[TC-04] should show error with locked_out_user', () => {
             page.login(envData.credentials.lockedOutUser, envData.credentials.password)
                 .verifyErrorMessage(ERROR_MESSAGES.lockedOutUser);
         });
 
-        it('should show error with invalid credentials', () => {
+        it('[TC-05] should show error with invalid credentials', () => {
             page.login('invalid_user', 'wrong_password')
                 .verifyErrorMessage(ERROR_MESSAGES.invalidCredentials);
         });
@@ -88,7 +88,7 @@ describe('SauceDemo E2E Suite - Positive & Negative Scenarios', () => {
                 page.title.should('be.visible');
             });
 
-            it('should show error when mandatory checkout fields are missing', () => {
+            it('[TC-06] should show error when mandatory checkout fields are missing', () => {
                 // Add item and go to checkout
                 page.addBackpackToCart();
                 page.goToCart();
@@ -111,7 +111,7 @@ describe('SauceDemo E2E Suite - Positive & Negative Scenarios', () => {
                 page.verifyErrorMessage(ERROR_MESSAGES.checkoutPostalCodeRequired);
             });
 
-            it('should not allow checkout with an empty cart', () => {
+            it('[TC-07] should not allow checkout with an empty cart', () => {
                  // Go to cart directly without adding items
                  page.goToCart();
 
@@ -124,7 +124,7 @@ describe('SauceDemo E2E Suite - Positive & Negative Scenarios', () => {
             });
         });
 
-        it('should redirect to login if accessing inventory directly', () => {
+        it('[TC-08] should redirect to login if accessing inventory directly', () => {
              page.clearCookiesAndStorage();
              cy.visit('/inventory.html', { failOnStatusCode: false });
 
@@ -132,7 +132,7 @@ describe('SauceDemo E2E Suite - Positive & Negative Scenarios', () => {
              page.verifyErrorMessage(ERROR_MESSAGES.unauthorizedAccess);
         });
 
-        it('should show visual and functional issues for problem_user', () => {
+        it('[TC-09] should show visual and functional issues for problem_user', () => {
              // problem_user can't see the correct images and has other issues
              page.login(envData.credentials.problemUser, envData.credentials.password);
 
