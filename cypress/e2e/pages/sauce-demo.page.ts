@@ -13,7 +13,7 @@ export class SauceDemoPage {
     get logoutLink() { return cy.get('#logout_sidebar_link'); }
 
     // Product Elements
-    getBackpackAddButton() { return cy.get('[data-test="add-to-cart-sauce-labs-backpack"]'); }
+    getBackpackAddButton() { return cy.get('[data-test="add-to-cart-sauce-labs-backpack"]',{timeout:10000}); }
     getBikeLightAddButton() { return cy.get('[data-test="add-to-cart-sauce-labs-bike-light"]'); }
 
     // Cart Page Elements
@@ -29,6 +29,10 @@ export class SauceDemoPage {
     get finishButton() { return cy.get('[data-test="finish"]'); }
     get completeHeader() { return cy.get('.complete-header'); }
     get backToProductsButton() { return cy.get('[data-test="back-to-products"]'); }
+
+    get inventoryItemNames() { return cy.get('.inventory_item_name');}
+    get productSortContainer() {return cy.get('[data-test="product_sort_container"]');}
+    get inventoryItemPrice(){return cy.get('.inventory_item_price');}
 
     // Page Actions
     visit(url: string = '/') {
@@ -150,4 +154,21 @@ export class SauceDemoPage {
         cy.clearLocalStorage();
         return this;
     }
+    sortProductsBy(option:string){
+        return cy.get('[data-test="product_sort_container"]').select(option);
+    }
+    get itemPrices(){
+        return cy.get('.inventory_item_price');
+
+    }
+
+  cancelCheckout() {
+    cy.get('[data-test="cancel"]').click();
+  }
+
+
 }
+
+
+
+

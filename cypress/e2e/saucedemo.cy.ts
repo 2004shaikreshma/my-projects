@@ -19,11 +19,11 @@ describe('SauceDemo E2E Suite - Positive & Negative Scenarios', () => {
                 page.title.should('be.visible');
             });
 
-        it('[TC-01] should successfully log in with standard_user', { tags: '@sanity' }, () => {
+        it('[TC-01] [SANITY] should successfully log in with standard_user',  () => {
             page.verifyLoggedIn();
         });
 
-        it('[TC-02] should add items to cart and complete checkout', { tags: '@regression' }, () => {
+        it('[TC-02] [REGRESSIshould add items to cart and complete checkout', () => {
             // Already logged in via session in beforeEach
 
             // Add backpack and bike light to cart
@@ -53,7 +53,7 @@ describe('SauceDemo E2E Suite - Positive & Negative Scenarios', () => {
             page.verifyOnInventoryPage();
         });
 
-        it('[TC-03] should logout successfully', { tags: '@sanity' }, () => {
+        it('[TC-03] [SANITY]should logout successfully', () => {
              // Already logged in via session in beforeEach
 
              // Open menu and logout
@@ -141,4 +141,7 @@ describe('SauceDemo E2E Suite - Positive & Negative Scenarios', () => {
              page.inventoryItems.should('contain', envData.products.backpack);
         });
     });
-});
+
+ });
+
+    

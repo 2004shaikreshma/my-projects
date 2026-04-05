@@ -1,7 +1,7 @@
 import { defineConfig } from 'cypress'
 import * as fs from 'fs'
 import * as path from 'path'
-import { plugin as cypressGrepPlugin } from '@cypress/grep/plugin'
+//const registerGrep =require('@cypress/grep'); 
 
 /**
  * Loads the test data from the config directory based on the environment name.
@@ -18,10 +18,12 @@ function getConfigurationByFile(env: string) {
 export default defineConfig({
   allowCypressEnv: true,
   e2e: {
+    baseUrl:'https://www.saucedemo.com',
     specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
     setupNodeEvents(on, config) {
       // cypress-grep plugin for spec pre-filtering
-      cypressGrepPlugin(config)
+      //registerGrep(config);
+     // return config
 
       // Logic for environment switching
       const envName = config.env.configFile || 'dev'

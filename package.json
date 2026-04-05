@@ -21,9 +21,9 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@cypress/grep": "^6.0.0",
     "@types/node": "^25.5.0",
     "cypress": "^15.13.0",
-    "@cypress/grep": "^6.0.0",
     "ts-loader": "^9.5.4",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2"
