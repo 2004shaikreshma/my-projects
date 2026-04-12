@@ -30,9 +30,36 @@ export class SauceDemoPage {
     get completeHeader() { return cy.get('.complete-header'); }
     get backToProductsButton() { return cy.get('[data-test="back-to-products"]'); }
 
-    get inventoryItemNames() { return cy.get('.inventory_item_name');}
-    get productSortContainer() {return cy.get('[data-test="product_sort_container"]');}
-    get inventoryItemPrice(){return cy.get('.inventory_item_price');}
+    // Additional Elements
+    get inventoryItemNames() { return cy.get('.inventory_item_name'); }
+    get productSortContainer() { return cy.get('[data-test="product_sort_container"]'); }
+    get inventoryItemPrice() { return cy.get('.inventory_item_price'); }
+
+    // 🔥 NEWLY ADDED (Fix Errors)
+    addToCartByIndex(index: number) {
+        cy.get('.inventory_item')
+          .eq(index)
+          .find('button')
+          .click();
+        return this;
+    }
+
+    get cartBadge() {
+        return cy.get('.shopping_cart_badge');
+    }
+
+    get detailPageTitle() {
+        return cy.get('.inventory_details_name');
+    }
+
+    removeItemFromCart() {
+        cy.get('.cart_button').click();
+        return this;
+    }
+
+    get cartItems() {
+        return cy.get('.cart_item');
+    }
 
     // Page Actions
     visit(url: string = '/') {
@@ -52,7 +79,6 @@ export class SauceDemoPage {
         cy.session(username, () => {
             cy.visit('/');
             this.login(username, password);
-            // Ensure login completed and we're on the right page before saving the session
             cy.url().should('include', '/inventory.html');
             this.title.should('be.visible').and('have.text', 'Products');
         });
@@ -110,6 +136,11 @@ export class SauceDemoPage {
         return this;
     }
 
+    cancelCheckout() {
+        cy.get('[data-test="cancel"]').click();
+        return this;
+    }
+
     // Verification Methods
     verifyLoggedIn() {
         cy.url().should('include', '/inventory.html');
@@ -154,21 +185,12 @@ export class SauceDemoPage {
         cy.clearLocalStorage();
         return this;
     }
-    sortProductsBy(option:string){
-        return cy.get('[data-test="product_sort_container"]').select(option);
+
+    sortProductsBy(option: string) {
+        return this.productSortContainer.select(option);
     }
-    get itemPrices(){
+
+    get itemPrices() {
         return cy.get('.inventory_item_price');
-
     }
-
-  cancelCheckout() {
-    cy.get('[data-test="cancel"]').click();
-  }
-
-
 }
-
-
-
-

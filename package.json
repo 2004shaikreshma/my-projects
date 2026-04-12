@@ -27,5 +27,8 @@
     "ts-loader": "^9.5.4",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.4.0"
   }
 }

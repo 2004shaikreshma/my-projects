@@ -1,147 +1,206 @@
 import { ERROR_MESSAGES } from './utils/constants';
 import { SauceDemoPage } from './pages/sauce-demo.page';
+import { faker } from '@faker-js/faker';
 
 describe('SauceDemo E2E Suite - Positive & Negative Scenarios', () => {
-    // This is the environmental test data loaded in cypress.config.ts
     const envData = Cypress.env();
-    console.log('Loaded Environment Data:', envData); // Debug log to verify data loading
+    console.log('Loaded Environment Data:', envData);
     const page = new SauceDemoPage();
 
-    // No top-level visit here to allow session management in sub-contexts
-    // If a test needs to start at '/', it should do so explicitly or in a context's beforeEach
+    // ── Faker-generated dynamic data (top-level, shared across tests) ──────────
+    const dynamicFirstName  = faker.person.firstName();
+    const dynamicLastName   = faker.person.lastName();
+    const dynamicZip        = faker.location.zipCode();
+    const dynamicEmail      = faker.internet.email();
+    const dynamicCity       = faker.location.city();
+    const dynamicStreet     = faker.location.streetAddress();
+    const dynamicPhone      = faker.phone.number();
+    const dynamicUsername   = faker.internet.username();
+    const dynamicPassword   = faker.internet.password({ length: 12 });
+    const dynamicSearchTerm = faker.commerce.productName();
+    const dynamicItemCount  = faker.number.int({ min: 1, max: 3 });
 
+    // ── Positive Test Cases ────────────────────────────────────────────────────
     context('Positive Test Cases', () => {
-            beforeEach(() => {
-                // Restore session for the standard user
-                page.loginWithSession(envData.credentials.username, envData.credentials.password);
-                page.visit('/inventory.html');
-                // Ensure the UI is rendered correctly
-                page.title.should('be.visible');
-            });
+        beforeEach(() => {
+            page.loginWithSession(envData.credentials.username, envData.credentials.password);
+            page.visit('/inventory.html');
+            page.title.should('be.visible');
+        });
 
-        it('[TC-01] [SANITY] should successfully log in with standard_user',  () => {
+        it('[TC-01] [SANITY] should successfully log in with standard_user', () => {
             page.verifyLoggedIn();
         });
 
-        it('[TC-02] [REGRESSIshould add items to cart and complete checkout', () => {
-            // Already logged in via session in beforeEach
-
-            // Add backpack and bike light to cart
+        it('[TC-02] [REGRESSION] should add items to cart and complete checkout', () => {
             page.addBackpackToCart();
             page.addBikeLightToCart();
 
-            // Go to cart
             page.goToCart();
             page.verifyCartContains(envData.products.backpack);
             page.verifyCartContains(envData.products.bikeLight);
 
-            // Checkout
             page.proceedToCheckout();
 
-            // Fill information from test data
             const profile = envData.checkoutProfiles[0];
             page.fillCheckoutForm(profile.firstName, profile.lastName, profile.postalCode);
             page.continueCheckout();
 
-            // Finish
             page.summaryTotalLabel.should('be.visible');
             page.finishCheckout();
 
-            // Verify success
             page.verifyCheckoutComplete();
             page.goBackToProducts();
             page.verifyOnInventoryPage();
         });
 
-        it('[TC-03] [SANITY]should logout successfully', () => {
-             // Already logged in via session in beforeEach
-
-             // Open menu and logout
-             page.logout();
-
-             // Verify back to login page
-             page.verifyOnLoginPage();
+        it('[TC-03] [SANITY] should logout successfully', () => {
+            page.logout();
+            page.verifyOnLoginPage();
         });
-    });
 
+        it('[TC-04] [REGRESSION] should complete checkout with fully dynamic user data', () => {
+            // Uses faker-generated names/zip — no hardcoding
+            page.addBackpackToCart();
+            page.goToCart();
+            page.proceedToCheckout();
+
+            page.fillCheckoutForm(dynamicFirstName, dynamicLastName, dynamicZip);
+            page.continueCheckout();
+
+            page.summaryTotalLabel.should('be.visible');
+            page.finishCheckout();
+            page.verifyCheckoutComplete();
+        });
+
+        it('[TC-05] [REGRESSION] should add a random number of items and verify cart badge count', () => {
+            // Adds 1–3 items (random) and asserts the cart badge matches
+            const products = [
+                envData.products.backpack,
+                envData.products.bikeLight,
+                envData.products.boltTShirt,
+            ].slice(0, dynamicItemCount);
+
+            products.forEach((_product, index) => {
+                // Click "Add to cart" for each visible product card by index
+                page.addToCartByIndex(index);
+            });
+
+            page.cartBadge.should('have.text', String(dynamicItemCount));
+        });
+
+    // ── Negative Test Cases ───────────────────────────────────────────────────
     context('Negative Test Cases', () => {
         beforeEach(() => {
             page.visit('/');
             cy.get('body').should('be.visible');
         });
 
-        it('[TC-04] should show error with locked_out_user', () => {
+        it('[TC-06] [SMOKE] should show error with locked_out_user', () => {
             page.login(envData.credentials.lockedOutUser, envData.credentials.password)
                 .verifyErrorMessage(ERROR_MESSAGES.lockedOutUser);
         });
 
-        it('[TC-05] should show error with invalid credentials', () => {
-            page.login('invalid_user', 'wrong_password')
+        it('[TC-07] [SMOKE] should show error with invalid credentials', () => {
+            page.login(dynamicUsername, dynamicPassword)
+                .verifyErrorMessage(ERROR_MESSAGES.invalidCredentials);
+        });
+
+        // ── NEW: faker-driven negative tests ──────────────────────────────────
+
+        it('[TC-08] [NEGATIVE] should show error when login attempted with random fake credentials', () => {
+            // Fully dynamic — no hardcoded username or password
+            page.login(dynamicUsername, dynamicPassword)
+                .verifyErrorMessage(ERROR_MESSAGES.invalidCredentials);
+        });
+
+        it('[TC-09] [NEGATIVE] should show error when username is valid but password is random', () => {
+            page.login(envData.credentials.username, dynamicPassword)
+                .verifyErrorMessage(ERROR_MESSAGES.invalidCredentials);
+        });
+
+        it('[TC-10] [NEGATIVE] should show error when username is random but password is valid', () => {
+            page.login(dynamicUsername, envData.credentials.password)
                 .verifyErrorMessage(ERROR_MESSAGES.invalidCredentials);
         });
 
         context('Authenticated Tests for Standard User', () => {
             beforeEach(() => {
-                // Restore session for the standard user and visit inventory
                 page.loginWithSession(envData.credentials.username, envData.credentials.password);
                 page.visit('/inventory.html');
                 page.title.should('be.visible');
             });
 
-            it('[TC-06] should show error when mandatory checkout fields are missing', () => {
-                // Add item and go to checkout
+            it('[TC-11] should show error when mandatory checkout fields are missing', () => {
                 page.addBackpackToCart();
                 page.goToCart();
                 page.proceedToCheckout();
 
-                // Leave fields empty and click continue
                 page.continueCheckout();
-
-                // Verify error for First Name
                 page.verifyErrorMessage(ERROR_MESSAGES.checkoutFirstNameRequired);
 
-                // Fill First Name and click continue
-                page.firstNameInput.type('John');
+                page.firstNameInput.type(dynamicFirstName);
                 page.continueCheckout();
                 page.verifyErrorMessage(ERROR_MESSAGES.checkoutLastNameRequired);
 
-                // Fill Last Name and click continue
-                page.lastNameInput.type('Doe');
+                page.lastNameInput.type(dynamicLastName);
                 page.continueCheckout();
                 page.verifyErrorMessage(ERROR_MESSAGES.checkoutPostalCodeRequired);
             });
 
-            it('[TC-07] should not allow checkout with an empty cart', () => {
-                 // Go to cart directly without adding items
-                 page.goToCart();
+            it('[TC-12] should not allow checkout with an empty cart', () => {
+                page.goToCart();
+                page.proceedToCheckout();
+                page.verifyCheckoutStepOne();
+            });
 
-                 // Check if checkout button exists but check if it's disabled or just redirecting
-                 // In sauce demo, you can click it but it's often considered a bug or a specific test case
-                 page.proceedToCheckout();
-                 page.verifyCheckoutStepOne();
-                 // Ideally we would expect an error or it should stay on cart page
-                 // But for the purpose of the exercise, let's check field validation again
+            it('[TC-13] [NEGATIVE] should show postal code error when only first and last name are dynamic', () => {
+                // Only postal code is left blank to target that specific validation
+                page.addBackpackToCart();
+                page.goToCart();
+                page.proceedToCheckout();
+
+                page.firstNameInput.type(dynamicFirstName);
+                page.lastNameInput.type(dynamicLastName);
+                // Intentionally skip postal code
+                page.continueCheckout();
+                page.verifyErrorMessage(ERROR_MESSAGES.checkoutPostalCodeRequired);
+            });
+
+            it('[TC-14] [NEGATIVE] should show last name error when only first name is dynamic', () => {
+                page.addBackpackToCart();
+                page.goToCart();
+                page.proceedToCheckout();
+
+                page.firstNameInput.type(dynamicFirstName);
+                // Intentionally skip last name and postal code
+                page.continueCheckout();
+                page.verifyErrorMessage(ERROR_MESSAGES.checkoutLastNameRequired);
+            });
+
+            it('[TC-15] [NEGATIVE] should complete checkout with faker zip but verify total label appears', () => {
+                // Dynamic zip to ensure no hardcoded postal format is assumed
+                page.addBackpackToCart();
+                page.goToCart();
+                page.proceedToCheckout();
+
+                page.fillCheckoutForm(dynamicFirstName, dynamicLastName, dynamicZip);
+                page.continueCheckout();
+                page.summaryTotalLabel.should('be.visible');
             });
         });
 
-        it('[TC-08] should redirect to login if accessing inventory directly', () => {
-             page.clearCookiesAndStorage();
-             cy.visit('/inventory.html', { failOnStatusCode: false });
-
-             // Verify redirect or error message
-             page.verifyErrorMessage(ERROR_MESSAGES.unauthorizedAccess);
+        it('[TC-16] should redirect to login if accessing inventory directly', () => {
+            page.clearCookiesAndStorage();
+            cy.visit('/inventory.html', { failOnStatusCode: false });
+            page.verifyErrorMessage(ERROR_MESSAGES.unauthorizedAccess);
         });
 
-        it('[TC-09] should show visual and functional issues for problem_user', () => {
-             // problem_user can't see the correct images and has other issues
-             page.login(envData.credentials.problemUser, envData.credentials.password);
-
-             // Verify that products are still visible despite technical issues
-             page.inventoryItems.first().should('be.visible');
-             page.inventoryItems.should('contain', envData.products.backpack);
+        it('[TC-17] should show visual and functional issues for problem_user', () => {
+            page.login(envData.credentials.problemUser, envData.credentials.password);
+            page.inventoryItems.first().should('be.visible');
+            page.inventoryItems.should('contain', envData.products.backpack);
         });
     });
-
- });
-
-    
+});
+});
