@@ -1,53 +1,50 @@
 import { defineConfig } from 'cypress'
 import * as fs from 'fs'
 import * as path from 'path'
-//const registerGrep =require('@cypress/grep'); 
 
-/**
- * Loads the test data from the config directory based on the environment name.
- * @param {string} env - Environment name (dev, prod, stage)
- */
+// 🔹 Load environment-specific JSON config
 function getConfigurationByFile(env: string) {
-  const pathToConfigFile = path.resolve(__dirname, 'config', `testdata.${env}.json`)
-  if (!fs.existsSync(pathToConfigFile)) {
-    throw new Error(`File not found: ${pathToConfigFile}`)
+  const filePath = path.resolve(__dirname, 'config', `testdata.${env}.json`)
+
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`❌ Config file not found: ${filePath}`)
   }
-  return JSON.parse(fs.readFileSync(pathToConfigFile, 'utf8'))
+
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'))
 }
 
 export default defineConfig({
-  allowCypressEnv: true,
   e2e: {
-    baseUrl:'https://www.saucedemo.com',
-    specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
-    setupNodeEvents(on, config) {
-      // cypress-grep plugin for spec pre-filtering
-      //registerGrep(config);
-     // return config
+    baseUrl: 'https://www.saucedemo.com',
 
-      // Logic for environment switching
+    specPattern: 'cypress/e2e/**/*.cy.{js,ts}',
+
+    setupNodeEvents(on, config) {
+      // 🔹 Get env name (default: dev)
       const envName = config.env.configFile || 'dev'
-      console.log('Loading configuration for environment:', envName);
+      console.log('🔧 Loading configuration for environment:', envName)
+
+      // 🔹 Load JSON config
       const appConfigs = getConfigurationByFile(envName)
 
-      // Merge environment variables
+      // 🔹 Merge configs safely (Node context ✅)
       config.env = {
         ...config.env,
-        ...appConfigs
+        ...appConfigs,
+        API_KEY: process.env.API_KEY // ✅ Safe here
       }
 
-      // Explicitly set baseUrl from config if it exists
+      // 🔹 Override baseUrl if provided
       if (appConfigs.baseUrl) {
         config.baseUrl = appConfigs.baseUrl
-        console.log('Base URL set to:', config.baseUrl);
       }
 
       return config
     },
-    // Viewport and other settings
+
     viewportWidth: 1280,
     viewportHeight: 720,
     video: false,
     screenshotOnRunFailure: true,
-  },
+  }
 })

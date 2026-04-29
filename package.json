@@ -1,25 +1,36 @@
 {
-  "name": "cypress-multi-env",
+  "name": "cypress-saucedemo",
   "version": "1.0.0",
-  "description": "",
+  "description": "Cypress automation project with multi-environment config",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "cy:run:headed": "cypress run --headed",
+
     "test:dev": "cypress run --env configFile=dev --headed",
-    "test:prod": "cypress run --env configFile=prod --headed",
     "test:stage": "cypress run --env configFile=stage --headed",
+    "test:prod": "cypress run --env configFile=prod --headed",
+
     "test:dev:headless": "cypress run --env configFile=dev",
-    "cy:grep:sanity": "cypress run --expose grepTags=\"@sanity\" --headed",
-    "cy:grep:sanity:prod": "cypress run --env configFile=prod --expose grepTags=\"@sanity\" --headed",
-    "cy:grep:regression": "cypress run --expose grepTags=\"@regression\" --headed",
-    "cy:grep:regression:prod": "cypress run --env configFile=prod --expose grepTags=\"@regression\" --headed"
+    "test:stage:headless": "cypress run --env configFile=stage",
+    "test:prod:headless": "cypress run --env configFile=prod",
+
+    "cy:grep:sanity": "cypress run --env grepTags=@sanity --headed",
+    "cy:grep:sanity:prod": "cypress run --env configFile=prod,grepTags=@sanity --headed",
+
+    "cy:grep:regression": "cypress run --env grepTags=@regression --headed",
+    "cy:grep:regression:prod": "cypress run --env configFile=prod,grepTags=@regression --headed"
   },
-  "keywords": [],
+  "keywords": [
+    "cypress",
+    "automation",
+    "typescript",
+    "testing"
+  ],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "devDependencies": {
     "@cypress/grep": "^6.0.0",
     "@types/node": "^25.5.0",
@@ -29,6 +40,7 @@
     "typescript": "^6.0.2"
   },
   "dependencies": {
-    "@faker-js/faker": "^10.4.0"
+    "@faker-js/faker": "^10.4.0",
+    "dotenv": "^17.4.2"
   }
 }
